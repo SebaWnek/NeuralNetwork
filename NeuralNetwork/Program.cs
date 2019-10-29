@@ -121,10 +121,20 @@ namespace NeuralNetwork
             return output;
         }
 
-        public void CalculateGammas()
+        public void CalculateGammas(Layer nextLayer)
         {
-
+            float[] gamma;
+            float[] derivatives = Derivative(Outputs);
+            for (int i = 0; i < Gammas.Length; i++)
+            {
+                for(int j = 0; j < nextLayer.Gammas.Length; j++)
+                {
+                    gamma[i] += nextLayer.Gammas[j] * nextLayer.Weights[j,i];
+                }
+                gamma[i] *= derivatives[i];
+            }
         }
+
         public void CalculateOutputGammas(float[] desiredOutputs)
         {
             float[] derivatives = Derivative(Outputs);
@@ -134,13 +144,24 @@ namespace NeuralNetwork
             }
         }
 
-        public void CalculateOutputWeightsDerivatives(float[] previousOutputs)
+        public void CalculateWeightsDerivatives(float[] previousOutputs)
         {
             for (int i = 0; i < Gammas.Length; i++)
             {
                 for (int j = 0; j < previousOutputs.Length; j++)
                 {
                     DWeights[i, j] = Gammas[i] * previousOutputs[j];
+                }
+            }
+        }
+
+        public void CalculateNewWeights()
+        {
+            for(int i = 0; i < Weights.GetLength(0); i++)
+            {
+                for(int j = 0; j < Weights.GetLength(1); j++)
+                {
+                    Weights[i,j] -= learningRate * DWeights[i,j];
                 }
             }
         }
@@ -189,25 +210,22 @@ namespace NeuralNetwork
             }
         }
 
-        private void CalculateBackPropagation(float[] inputs, float[] desiredOutput)
+        private void CalculateBackPropagation(float[] desiredOutput)
         {
-            if (inputs.Length == Input.Inputs.Length && desiredOutput.Length == GetOutputs().Length)
-            {
-                Input.Inputs = inputs;
-            }
-            else
-            {
-                Console.WriteLine("Wrong input or desired output!");
-                return;
-            }
             Layers[Layers.Length - 1].CalculateOutputGammas(desiredOutput);
-            Layers[Layers.Length - 1].CalculateOutputWeightsDerivatives(Layers[Layers.Length - 2].Outputs);
+            Layers[Layers.Length - 1].CalculateWeightsDerivatives(Layers[Layers.Length - 2].Outputs);
+            for (int i = Layers.Length - 2; i > 0; i--)
+            {
+                Layers[i].CalculateGammas(Layers[i+1]);
+                i > 0 ? Layers[i].CalculateWeightsDerivatives(Layers[i - 1].Outputs) : Layers[i].CalculateWeightsDerivatives(Input.Inputs);
+            }
+            foreach(Layer layer in Layers) layer.CalculateNewWeights();
         }
 
         public void TrainNetwork(float[] inputs, float[] desiredOutput)
         {
             CalculateNetwork(inputs);
-            CalculateBackPropagation(inputs, desiredOutput);
+            CalculateBackPropagation(desiredOutput);
         }
     }
 }
