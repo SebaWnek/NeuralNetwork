@@ -22,5 +22,10 @@ namespace NeuralNetwork
             if (Double.IsNaN(power)) power = -1;
             return power;
         }
+
+        static public double Sum(double x, double y)
+        {
+            return x + y;
+        }
     }
 }

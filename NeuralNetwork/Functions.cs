@@ -43,6 +43,25 @@ namespace NeuralNetwork
             }
             return output;
         }
+        public static float[] ReLU(float[] input)
+        {
+            float[] output = new float[input.Length];
+            for (int i = 0; i < input.Length; i++)
+            {
+                output[i] = input[i] >= 0 ? input[i] : 0;
+            }
+            return output;
+        }
+
+        public static float[] DReLU(float[] input)
+        {
+            float[] output = new float[input.Length];
+            for (int i = 0; i < input.Length; i++)
+            {
+                output[i] = input[i] >= 0 ? 1 : 0;
+            }
+            return output;
+        }
 
         public static float[] Sigmoid(float[] input)
         {

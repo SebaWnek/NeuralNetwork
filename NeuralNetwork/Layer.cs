@@ -6,7 +6,7 @@ namespace NeuralNetwork
     {
         static readonly int minRand = -1;
         static readonly int maxRand = 1;
-        static readonly private float learningRate = 0.0003f;
+        static readonly private float learningRate = 0.000001f;
         static readonly Random random = new Random();
         public Func<float[], float[]> Function { get; set; }
         public Func<float[], float[]> Derivative { get; set; }
@@ -27,8 +27,8 @@ namespace NeuralNetwork
             Weights = new float[count, prevCount];
             DWeights = new float[count, prevCount];
             InitializeLayer();
-            Function = Functions.TanH;
-            Derivative = Functions.DTanH;
+            Function = Functions.Linear;
+            Derivative = Functions.DLinear;
         }
 
         private void InitializeLayer()
