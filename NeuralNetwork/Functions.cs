@@ -2,21 +2,21 @@
 
 namespace NeuralNetwork
 {
-    static class Functions
+    public static class Functions
     {
-        public static float[] TanH(float[] input)
+        public static double[] TanH(double[] input)
         {
-            float[] output = new float[input.Length];
+            double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
             {
-                output[i] = (float)Math.Tanh(input[i]);
+                output[i] = (double)Math.Tanh(input[i]);
             }
             return output;
         }
 
-        public static float[] DTanH(float[] input)
+        public static double[] DTanH(double[] input)
         {
-            float[] output = new float[input.Length];
+            double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
             {
                 output[i] = 1 - input[i] * input[i];
@@ -24,9 +24,9 @@ namespace NeuralNetwork
             return output;
         }
 
-        public static float[] LeakyReLU(float[] input)
+        public static double[] LeakyReLU(double[] input)
         {
-            float[] output = new float[input.Length];
+            double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
             {
                 output[i] = input[i] >= 0 ? input[i] : 0.01f * input[i];
@@ -34,18 +34,18 @@ namespace NeuralNetwork
             return output;
         }
 
-        public static float[] DLeakyReLU(float[] input)
+        public static double[] DLeakyReLU(double[] input)
         {
-            float[] output = new float[input.Length];
+            double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
             {
                 output[i] = input[i] >= 0 ? 1 : 0.01f;
             }
             return output;
         }
-        public static float[] ReLU(float[] input)
+        public static double[] ReLU(double[] input)
         {
-            float[] output = new float[input.Length];
+            double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
             {
                 output[i] = input[i] >= 0 ? input[i] : 0;
@@ -53,9 +53,9 @@ namespace NeuralNetwork
             return output;
         }
 
-        public static float[] DReLU(float[] input)
+        public static double[] DReLU(double[] input)
         {
-            float[] output = new float[input.Length];
+            double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
             {
                 output[i] = input[i] >= 0 ? 1 : 0;
@@ -63,28 +63,28 @@ namespace NeuralNetwork
             return output;
         }
 
-        public static float[] Sigmoid(float[] input)
+        public static double[] Sigmoid(double[] input)
         {
-            float[] output = new float[input.Length];
+            double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
             {
-                output[i] = (float)(1 / (1 + Math.Pow(Math.E, -1 * input[i])));
+                output[i] = (double)(1 / (1 + Math.Pow(Math.E, -1 * input[i])));
             }
             return output;
         }
 
-        public static float[] DSigmoid(float[] input)
+        public static double[] DSigmoid(double[] input)
         {
-            float[] output = new float[input.Length];
+            double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
             {
                 output[i] = input[i] * (1 - input[i]);
             }
             return output;
         }
-        public static float[] Linear(float[] input)
+        public static double[] Linear(double[] input)
         {
-            float[] output = new float[input.Length];
+            double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
             {
                 output[i] = input[i];
@@ -92,9 +92,9 @@ namespace NeuralNetwork
             return output;
         }
 
-        public static float[] DLinear(float[] input)
+        public static double[] DLinear(double[] input)
         {
-            float[] output = new float[input.Length];
+            double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
             {
                 output[i] = 1;

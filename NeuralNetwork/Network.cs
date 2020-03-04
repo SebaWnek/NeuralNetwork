@@ -2,7 +2,7 @@
 
 namespace NeuralNetwork
 {
-    class Network
+    public class Network
     {
         public Input Input { get; set; }
         public Layer[] Layers { get; set; }
@@ -21,12 +21,12 @@ namespace NeuralNetwork
             else throw new ArgumentException("Not enough layers!");
         }
 
-        public float[] GetOutputs()
+        public double[] GetOutputs()
         {
             return Layers[Layers.Length - 1].Outputs;
         }
 
-        public void CalculateNetwork(float[] inputs)
+        public void CalculateNetwork(double[] inputs)
         {
             if (inputs.Length == Input.Inputs.Length)
             {
@@ -45,7 +45,7 @@ namespace NeuralNetwork
             }
         }
 
-        private void CalculateBackPropagation(float[] desiredOutput)
+        private void CalculateBackPropagation(double[] desiredOutput)
         {
             for(int i = Layers.Length - 1; i >= 0; i--)
             {
@@ -68,7 +68,7 @@ namespace NeuralNetwork
             }
         }
 
-        public void TrainNetwork(float[] inputs, float[] desiredOutput)
+        public void TrainNetwork(double[] inputs, double[] desiredOutput)
         {
             CalculateNetwork(inputs);
             CalculateBackPropagation(desiredOutput);
