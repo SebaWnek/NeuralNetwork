@@ -2,9 +2,50 @@
 
 namespace NeuralNetwork
 {
+    /// <summary>
+    /// Possible activation functions
+    /// </summary>
+    public enum FunctionTypes
+    {
+        TanH,
+        Sigmoid,
+        ReLU,
+        LeakyReLU,
+        Linear
+    }
+
+    /// <summary>
+    /// Activation functions. Must contain function and it's derivative named DFunction.
+    /// </summary>
     public static class Functions
     {
-        public static double[] TanH(double[] input)
+        /// <summary>
+        /// Factory method for generating delegates to be used by layers as activation functions.
+        /// </summary>
+        /// <param name="type">Type of function to be provided</param>
+        /// <returns>Tuble consiting of delegates of activation functuon and its derivative</returns>
+        public static (Func<double[], double[]> func, Func<double[], double[]> derivative) GetFunctions(FunctionTypes type)
+        {
+            switch (type)
+            {
+                case FunctionTypes.TanH:
+                    return (x => TanH(x), x => DTanH(x));
+                case FunctionTypes.Sigmoid:
+                    return (x => Sigmoid(x), x => DSigmoid(x));
+                case FunctionTypes.ReLU:
+                    return (x => ReLU(x), x => DReLU(x));
+                case FunctionTypes.LeakyReLU:
+                    return (x => LeakyReLU(x), x => DLeakyReLU(x));
+                case FunctionTypes.Linear:
+                    return (x => Linear(x), x => DLinear(x));
+                default:
+                    return (x => Sigmoid(x), x => DSigmoid(x));
+            }
+        }
+        /// <summary>
+        /// Hyberbolic tangent
+        /// </summary>
+        private static double[] TanH(double[] input)
         {
             double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
@@ -14,7 +55,7 @@ namespace NeuralNetwork
             return output;
         }
 
-        public static double[] DTanH(double[] input)
+        private static double[] DTanH(double[] input)
         {
             double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
@@ -23,8 +64,10 @@ namespace NeuralNetwork
             }
             return output;
         }
-
-        public static double[] LeakyReLU(double[] input)
+        /// <summary>
+        /// Leaky rectified linear unit
+        /// </summary>
+        private static double[] LeakyReLU(double[] input)
         {
             double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
@@ -34,7 +77,7 @@ namespace NeuralNetwork
             return output;
         }
 
-        public static double[] DLeakyReLU(double[] input)
+        private static double[] DLeakyReLU(double[] input)
         {
             double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
@@ -43,7 +86,10 @@ namespace NeuralNetwork
             }
             return output;
         }
-        public static double[] ReLU(double[] input)
+        /// <summary>
+        /// Rectified linear unit
+        /// </summary>
+        private static double[] ReLU(double[] input)
         {
             double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
@@ -53,7 +99,7 @@ namespace NeuralNetwork
             return output;
         }
 
-        public static double[] DReLU(double[] input)
+        private static double[] DReLU(double[] input)
         {
             double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
@@ -62,8 +108,10 @@ namespace NeuralNetwork
             }
             return output;
         }
-
-        public static double[] Sigmoid(double[] input)
+        /// <summary>
+        /// Sigmoid function
+        /// </summary>
+        private static double[] Sigmoid(double[] input)
         {
             double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
@@ -73,7 +121,7 @@ namespace NeuralNetwork
             return output;
         }
 
-        public static double[] DSigmoid(double[] input)
+        private static double[] DSigmoid(double[] input)
         {
             double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
@@ -82,7 +130,10 @@ namespace NeuralNetwork
             }
             return output;
         }
-        public static double[] Linear(double[] input)
+        /// <summary>
+        /// Linear function
+        /// </summary>
+        private static double[] Linear(double[] input)
         {
             double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)
@@ -92,7 +143,7 @@ namespace NeuralNetwork
             return output;
         }
 
-        public static double[] DLinear(double[] input)
+        private static double[] DLinear(double[] input)
         {
             double[] output = new double[input.Length];
             for (int i = 0; i < input.Length; i++)

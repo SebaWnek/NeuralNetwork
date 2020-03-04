@@ -2,11 +2,14 @@
 
 namespace NeuralNetwork
 {
+    /// <summary>
+    /// Hidden and output layers
+    /// </summary>
     public class Layer
     {
-        static readonly int minRand = -1;
-        static readonly int maxRand = 1;
-        static readonly private double learningRate = 0.0001f;
+        static readonly int minRand = -1; //Allowing to change random numbers generator behavoiur
+        static readonly int maxRand = 1; //Allowing to change random numbers generator behavoiur
+        static readonly int randDivisor = 100; //Allowing to change random numbers generator behavoiur
         static readonly Random random = new Random();
         public Func<double[], double[]> Function { get; set; }
         public Func<double[], double[]> Derivative { get; set; }
@@ -18,7 +21,20 @@ namespace NeuralNetwork
         public double[] Outputs { get; set; }
         public double[] Gammas { get; set; }
 
-        public Layer(int prevCount, int count)
+        public double LearningRate { get; set; } = 0.00005;
+        public double BiasMultiplier { get; set; } = 10;
+        public double WeightsMultiplier { get; set; } = 2;
+
+        /// <summary>
+        /// Main constructor for layer
+        /// </summary>
+        /// <param name="prevCount">Count of nodes in preceeding layer</param>
+        /// <param name="count">Count of nodes in current layer</param>
+        /// <param name="type">Activation function type</param>
+        /// <param name="learningRate">Learning rate</param>
+        /// <param name="biasMultip">Range of starting biases - random number between -biasMultip and biasMultip</param>
+        /// <param name="weightsMultip">Range of starting biases - random number between -weihtsMultip and weightsMultip</param>
+        public Layer(int prevCount, int count, FunctionTypes type = FunctionTypes.Sigmoid, double learningRate = 0.00005, double biasMultip = 10, double weightsMultip = 2)
         {
             Biases = new double[count];
             DBiases = new double[count];
@@ -26,31 +42,40 @@ namespace NeuralNetwork
             Gammas = new double[count];
             Weights = new double[count, prevCount];
             DWeights = new double[count, prevCount];
+            LearningRate = learningRate;
+            BiasMultiplier = biasMultip;
+            WeightsMultiplier = weightsMultip;
+            (Function, Derivative) = Functions.GetFunctions(type);
             InitializeLayer();
-            Function = Functions.TanH;
-            Derivative = Functions.DTanH;
         }
 
+        /// <summary>
+        /// Generating random biases and weights
+        /// </summary>
         private void InitializeLayer()
         {
             for (int i = 0; i < Biases.Length; i++)
             {
-                Biases[i] = 5 * GetRandom();
+                Biases[i] = BiasMultiplier * GetRandom();
             }
             for (int i = 0; i < Weights.GetLength(0); i++)
             {
                 for (int j = 0; j < Weights.GetLength(1); j++)
                 {
-                    Weights[i, j] = GetRandom();
+                    Weights[i, j] = WeightsMultiplier * GetRandom();
                 }
             }
         }
 
         private static double GetRandom()
         {
-            return (double)random.Next(100 * minRand, 100 * maxRand) / 100;
+            return (double)random.Next(100 * minRand, 100 * maxRand) / randDivisor;
         }
 
+        /// <summary>
+        /// Calculating layer's output values
+        /// </summary>
+        /// <param name="previousLayer">Layer's input values provided by preceeding layer</param>
         public void CalculateOutput(double[] previousLayer)
         {
             MultiplyWeightsInputs(previousLayer);
@@ -58,6 +83,11 @@ namespace NeuralNetwork
             Outputs = Function(Outputs);
         }
 
+        /// <summary>
+        /// Series of helper methods for calculating different steps of output calculation and backpropagation
+        /// </summary>
+        
+        #region Helper methods
         private void MultiplyWeightsInputs(double[] previousLayer)
         {
             Outputs = new double[Outputs.Length]; //clear outputs
@@ -126,7 +156,7 @@ namespace NeuralNetwork
             {
                 for (int j = 0; j < Weights.GetLength(1); j++)
                 {
-                    Weights[i, j] += learningRate * DWeights[i, j];
+                    Weights[i, j] += LearningRate * DWeights[i, j];
                 }
             }
         }
@@ -135,9 +165,11 @@ namespace NeuralNetwork
         {
             for (int i = 0; i < Biases.Length; i++)
             {
-                Biases[i] += learningRate * DBiases[i];
+                Biases[i] += LearningRate * DBiases[i];
             }
         }
+        #endregion
+
         /// <summary>
         /// Calculates output layer
         /// </summary>
@@ -171,7 +203,9 @@ namespace NeuralNetwork
             CalculateWeightsDerivatives(input.Inputs);
             CalculateBiasDerivatives();
         }
-
+        /// <summary>
+        /// Update nodes' parameters with newly calculated differences
+        /// </summary>
         public void UpdateLayer()
         {
             UpdateWeights();
