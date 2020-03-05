@@ -5,7 +5,7 @@ namespace NeuralNetwork
     /// <summary>
     /// Hidden and output layers
     /// </summary>
-    public class Layer
+    public class Layer : ILayer
     {
         static readonly int minRand = -1; //Allowing to change random numbers generator behavoiur
         static readonly int maxRand = 1; //Allowing to change random numbers generator behavoiur

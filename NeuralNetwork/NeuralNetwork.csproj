@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Functions.cs" />
+    <Compile Include="ILayer.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="INeuralNetwork.cs" />
     <Compile Include="Layer.cs" />
